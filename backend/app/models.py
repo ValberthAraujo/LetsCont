@@ -196,6 +196,7 @@ class RifaCheckout(SQLModel):
     nome: str = Field(min_length=1, max_length=255)
     email: EmailStr = Field(max_length=255)
     valor: float = Field(gt=0)
+    quantidade: int = Field(default=1, ge=1)
 
 
 class RifaPedido(SQLModel, table=True):
@@ -204,6 +205,7 @@ class RifaPedido(SQLModel, table=True):
     nome: str = Field(min_length=1, max_length=255)
     email: EmailStr = Field(max_length=255)
     valor: float
+    quantidade: int = Field(default=1)
     status: str = Field(default="pending", max_length=50)
     mp_payment_id: str | None = Field(default=None, max_length=100)
     qr_code: str | None = None
@@ -216,5 +218,44 @@ class RifaPublic(SQLModel):
     nome: str
     email: EmailStr
     valor: float
+    quantidade: int
     status: str
     mp_payment_id: str | None = None
+
+
+# Let's Coffe Produtos
+class ProdutoBase(SQLModel):
+    nome: str = Field(min_length=1, max_length=255)
+    quantidade: int = Field(default=1, ge=0)
+    preco: float = Field(gt=0)
+    descricao: str | None = Field(default=None, max_length=2000)
+    foto: str | None = None  # URL ou Data URL base64
+
+
+class ProdutoCreate(ProdutoBase):
+    pass
+
+
+class ProdutoUpdate(SQLModel):
+    nome: str | None = Field(default=None, max_length=255)
+    quantidade: int | None = Field(default=None, ge=0)
+    preco: float | None = Field(default=None, gt=0)
+    descricao: str | None = Field(default=None, max_length=2000)
+    foto: str | None = None
+
+
+class Produto(ProdutoBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class ProdutoPublic(ProdutoBase):
+    id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+
+
+class ProdutosPublic(SQLModel):
+    data: list[ProdutoPublic]
+    count: int

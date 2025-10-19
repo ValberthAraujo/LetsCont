@@ -61,6 +61,45 @@
   overflow: visible;
 }
 
+.formCard {
+  background: var(--form-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: var(--spacing-md);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: var(--spacing-md);
+  align-items: start;
+}
+
+.dropzone {
+  border: 2px dashed var(--color-gray-light);
+  background: var(--header-color);
+  border-radius: var(--border-radius);
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--secondary-color);
+  cursor: pointer;
+}
+
+.dropActive { border-color: var(--primary-color); background: rgba(255,255,255,0.03); }
+
+.dropLabel { opacity: 0.8; font-size: 0.95rem; padding: 0 .5rem; }
+
+.previewImage { width: 100%; height: 100%; object-fit: cover; border-radius: calc(var(--border-radius) - 2px); }
+
+.fieldRow { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-sm); }
+
+.helpText { font-size: 0.85rem; opacity: 0.7; margin-top: 0.25rem; }
+
+.formActions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: var(--spacing-sm); }
+
 @media (max-width: 768px) {
   .registrationForm {
     margin: 0 var(--spacing-sm);
@@ -75,6 +114,56 @@
   border-radius: var(--border-radius);
   padding: 0.7rem 0.9rem;
   color: var(--secondary-color);
+}
+.formGroup textarea {
+  background: var(--color-dark-gray);
+  border: 1px solid var(--color-gray-light);
+  border-radius: var(--border-radius);
+  padding: 0.7rem 0.9rem;
+  color: var(--secondary-color);
+}
+
+.counter { font-size: 0.8rem; opacity: 0.65; text-align: right; margin-top: 0.2rem; }
+
+/* Modal overlay */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  z-index: 1000;
+}
+
+.modalContent {
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.modalTitle { font-size: 1.25rem; font-weight: 600; }
+
+.closeBtn {
+  border: 1px solid var(--color-gray-light);
+  background: var(--header-color);
+  color: var(--secondary-color);
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
 .card h2 {
@@ -125,20 +214,26 @@
 .tdCenter { text-align: center; }
 /* Subnav for admin panel tabs */
 .subnav {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 0.5rem;
   margin-top: 0.5rem;
+  /* expand to the full width of the parent card, flush to edges */
+  margin-left: calc(-1 * var(--spacing-lg));
+  margin-right: calc(-1 * var(--spacing-lg));
+  padding: 0 var(--spacing-lg);
+  align-items: stretch;
 }
 
 .tabLink {
-  display: inline-block;
+  display: block;
   padding: 0.5rem 0.75rem;
   border-radius: var(--border-radius);
   background: var(--header-color);
   color: var(--secondary-color);
   text-decoration: none;
   border: 1px solid var(--color-gray-light);
+  text-align: center;
 }
 
 .tabActive {
@@ -150,3 +245,125 @@
 .contentWrap {
   margin-top: var(--spacing-md);
 }
+
+/* Cards grid for LetsCoffe */
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.cardItem {
+  background: var(--form-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardImage {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: var(--header-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.cardImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardBody {
+  padding: 0.75rem;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.muted { opacity: 0.7; }
+
+.cardTitle {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.cardActions {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.btnRow { display: flex; gap: 0.5rem; }
+
+.btn {
+  padding: 0.35rem 0.6rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-gray-light);
+  background: var(--header-color);
+  color: var(--secondary-color);
+  cursor: pointer;
+}
+
+.btnPrimary {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--secondary-color);
+}
+
+.time { font-size: 0.85rem; opacity: 0.7; }
+
+.inputInline {
+  width: 100%;
+  background: var(--color-dark-gray);
+  border: 1px solid var(--color-gray-light);
+  border-radius: var(--border-radius);
+  padding: 0.45rem 0.6rem;
+  color: var(--secondary-color);
+}
+
+/* Responsiveness for the LetsCoffe add-product modal */
+@media (max-width: 900px) {
+  .modalContent { max-width: 92vw; }
+}
+
+@media (max-width: 768px) {
+  .formGrid { grid-template-columns: 1fr; gap: var(--spacing-sm); }
+  .dropzone { height: 200px; }
+  .fieldRow { grid-template-columns: 1fr; }
+  .formActions { flex-direction: column-reverse; align-items: stretch; }
+  .formActions .btn { width: 100%; }
+}
+
+@media (max-width: 420px) {
+  .modalOverlay { padding: 1rem 0.5rem; }
+  .dropzone { height: 160px; }
+  .dropLabel { font-size: 0.85rem; }
+}
+
+/* Stats */
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--spacing-md);
+  margin: 0.75rem 0 1rem;
+}
+
+.statCard {
+  background: var(--form-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 0.9rem 1rem;
+}
+
+.statTitle { font-size: 0.9rem; opacity: 0.75; margin-bottom: 0.25rem; }
+.statValue { font-size: 1.3rem; font-weight: 700; }
+.statPositive { color: var(--color-success); }
+.statNegative { color: var(--detail-color); }

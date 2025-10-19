@@ -23,7 +23,7 @@ def criar_pagamento_pix(session: SessionDep, body: RifaCheckout) -> dict[str, An
     }
     payload = {
         "transaction_amount": round(float(body.valor), 2),
-        "description": "Rifa LetsCont",
+        "description": f"Rifa LetsCont x{body.quantidade}",
         "payment_method_id": "pix",
         "payer": {
             "email": body.email,
@@ -47,6 +47,7 @@ def criar_pagamento_pix(session: SessionDep, body: RifaCheckout) -> dict[str, An
         nome=body.nome,
         email=body.email,
         valor=float(body.valor),
+        quantidade=int(body.quantidade or 1),
         status=str(status),
         mp_payment_id=payment_id,
         qr_code=qr_code,

@@ -82,7 +82,7 @@ export function Checkout() {
     setStatus({ type: '', text: '', paymentUrl: '' });
     setLoading(true);
     try {
-      const payload = { nome, email, valor: Number(totalPrice) };
+      const payload = { nome, email, valor: Number(totalPrice), quantidade: Number(quantity) };
       const res = await checkoutRifa(payload);
 
       const provider = res?.provider || res?.gateway || '';

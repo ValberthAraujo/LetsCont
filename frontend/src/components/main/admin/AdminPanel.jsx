@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { HalloweenWebs } from '../../animations/HalloweenWebs';
 import { useAuth } from '../../../context/AuthContext';
@@ -10,10 +10,22 @@ export function AdminPanel() {
 
   const isAdmin = useMemo(() => Boolean(user?.is_superuser), [user]);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     logout();
     navigate('/');
-  };
+  }, [logout, navigate]);
+
+  const tabClass = useCallback(
+    ({ isActive }) => (isActive ? `${styles.tabLink} ${styles.tabActive}` : styles.tabLink),
+    []
+  );
+
+  const navItems = [
+    { to: '/admin/painel/inscricoes', label: 'Painel Inscrições' },
+    { to: '/admin/painel/financeiro', label: 'Painel Financeiro' },
+    { to: '/admin/painel/infra', label: 'Painel Infra' },
+    { to: '/admin/painel/letscoffe', label: 'Painel LetsCoffe' },
+  ];
 
   return (
     <main>
@@ -45,7 +57,6 @@ export function AdminPanel() {
               <p>
                 Bem-vindo, <strong>{user?.full_name || user?.email}</strong>.
               </p>
-              <p>Nome: {user?.full_name || user?.email || '-'}</p>
 
               {!isAdmin && (
                 <p className={styles.error}>
@@ -56,18 +67,11 @@ export function AdminPanel() {
 
             {/* Navegação do painel */}
             <nav className={styles.subnav} aria-label="Seções do painel">
-              <NavLink to="/admin/painel/inscricoes" className={({ isActive }) => isActive ? `${styles.tabLink} ${styles.tabActive}` : styles.tabLink}>
-                Painel Inscrições
-              </NavLink>
-              <NavLink to="/admin/painel/financeiro" className={({ isActive }) => isActive ? `${styles.tabLink} ${styles.tabActive}` : styles.tabLink}>
-                Painel Financeiro
-              </NavLink>
-              <NavLink to="/admin/painel/infra" className={({ isActive }) => isActive ? `${styles.tabLink} ${styles.tabActive}` : styles.tabLink}>
-                Painel Infra
-              </NavLink>
-              <NavLink to="/admin/painel/letscoffe" className={({ isActive }) => isActive ? `${styles.tabLink} ${styles.tabActive}` : styles.tabLink}>
-                Painel LetsCoffe
-              </NavLink>
+              {navItems.map((item) => (
+                <NavLink key={item.to} to={item.to} className={tabClass}>
+                  {item.label}
+                </NavLink>
+              ))}
             </nav>
 
             <div className={styles.contentWrap}>

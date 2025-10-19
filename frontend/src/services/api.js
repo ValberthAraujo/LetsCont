@@ -62,14 +62,19 @@ export async function sendContato({ nome, email, mensagem }) {
   }); // expected: { id, detail? }
 }
 
+// Admin/Infra: listar contatos recebidos
+export async function listContatos(token) {
+  return apiFetch('/contatos', { method: 'GET', token }); // { data: ContatoPublic[], count: number }
+}
+
 // Rifa: criar checkout/pedido de pagamento
-export async function checkoutRifa({ nome, email, valor }) {
+export async function checkoutRifa({ nome, email, valor, quantidade = 1 }) {
   const headers = {};
   if (PUBLIC_KEY) headers['X-Public-Key'] = PUBLIC_KEY;
   return apiFetch('/rifas/checkout', {
     method: 'POST',
     headers,
-    body: { nome, email, valor },
+    body: { nome, email, valor, quantidade },
   }); // expected: { payment_url? , status? }
 }
 
@@ -77,4 +82,38 @@ export async function checkoutRifa({ nome, email, valor }) {
 export async function getRifaStatus(id) {
   const qs = new URLSearchParams({ id: String(id) });
   return apiFetch(`/rifas/status?${qs.toString()}`, { method: 'GET' });
+}
+
+// Infra: marcar contato como respondido
+export async function responderContato(token, id, resposta = 'Respondido pelo painel') {
+  return apiFetch(`/contatos/${id}/responder`, {
+    method: 'PATCH',
+    token,
+    body: { resposta },
+  }); // ContatoPublic
+}
+
+// Let's Coffe: produtos
+export async function listProdutos(token) {
+  return apiFetch('/letscoffe/produtos', { method: 'GET', token }); // { data: ProdutoPublic[], count }
+}
+
+export async function createProduto(token, { nome, quantidade, preco, descricao, foto }) {
+  return apiFetch('/letscoffe/produtos', {
+    method: 'POST',
+    token,
+    body: { nome, quantidade, preco, descricao, foto },
+  }); // ProdutoPublic
+}
+
+export async function updateProduto(token, id, body) {
+  return apiFetch(`/letscoffe/produtos/${id}`, {
+    method: 'PATCH',
+    token,
+    body,
+  }); // ProdutoPublic
+}
+
+export async function deleteProduto(token, id) {
+  return apiFetch(`/letscoffe/produtos/${id}`, { method: 'DELETE', token });
 }
