@@ -10,14 +10,14 @@ import { CarouselMotion } from '../../animations/Carrossel';
 export function Home() {
   const sources = React.useMemo(() => ([
     { fallback: feeac, alt: 'Fachada da FEEAC (UFC)' },
-    { fallback: feeac2, alt: 'Auditório da FEEAC (UFC)' },
+    { fallback: feeac2, alt: 'Audit��rio da FEEAC (UFC)' },
   ]), []);
 
   return (
     <main className={styles.principal}>
       <HalloweenWebs />
 
-        <h1 className={styles.titulo}>Lets Cont 2025.2</h1>
+      <h1 className={styles.titulo}>Lets Cont 2025.2</h1>
 
       <section className={styles.containerPrincipal}>
         <div className={styles.corpoCard}>
@@ -36,28 +36,29 @@ export function Home() {
             <div className={styles.colunaEsquerda}>
               <h2 className={styles.tituloCartao}>Descrição do Evento</h2>
               <p className={styles.textoCartao}>
-                Este evento é organizado pelos estudantes de Ciências Contábeis da UFC e
+                Este evento é organizado pelos estudantes de Ciências Contǭbeis da UFC e
                 conta com a participação de egressos da universidade, oferecendo uma
                 excelente oportunidade para <strong>networking e integração</strong>.
               </p>
               <p className={styles.textoCartao}>
                 <strong>Todos estão convidados a participar!</strong>
               </p>
-                <h3 className={`${styles.tituloCartao} ${styles.tituloCompacto}`}>Horário</h3>
-                <p className={styles.textoCartao}>Ainda será definido...</p>
+              <h3 className={`${styles.tituloCartao} ${styles.tituloCompacto}`}>Horário</h3>
+              <p className={styles.textoCartao}>Ainda será definido...</p>
             </div>
             <div className={styles.colunaDireita}>
               <h2 className={styles.tituloCartao}>Local</h2>
-              <p className={styles.textoCartao}>O Let's Cont desse ano acontecerá no:</p>
+              <p className={styles.textoCartao}>O Let's Cont desse ano acontecerǭ no:</p>
               <p className={styles.textoCartao}><strong>Auditório Pedro Viera</strong></p>
               <address className={styles.textoCartao}>
                 R. Mal. Deodoro, 400 - Benfica, Fortaleza - CE, 60020-060
               </address>
               <a
                 className={styles.linkMapa}
-                href="https://www.google.com/maps/search/?api=1&query=FEAAC+NOVA+-+Bloco+Didático+III,+Fortaleza"
+                href="https://www.google.com/maps/search/?api=1&query=FEAAC+NOVA+-+Bloco+Didático+III+Fortaleza"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Abrir localização no Google Maps"
               >
                 Ver no mapa
               </a>
@@ -91,3 +92,4 @@ export function Home() {
     </main>
   );
 }
+

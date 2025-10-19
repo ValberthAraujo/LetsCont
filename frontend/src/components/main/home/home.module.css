@@ -81,10 +81,14 @@
   font-weight: 600;
   cursor: pointer;
 
-  background-color: linear-gradient(135deg, var(--background-color) 0%, transparent 100%);
+  background: var(--primary-color);
   color: var(--secondary-color);
   transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
-  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+.linkMapa:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
 }
 
 .gradeVideos {

@@ -5,9 +5,9 @@ from typing import Annotated, Any, Literal
 from pydantic import (
     AnyUrl,
     BeforeValidator,
+    computed_field,
     EmailStr,
     HttpUrl,
-    computed_field,
     model_validator,
 )
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -82,35 +82,12 @@ class Settings(BaseSettings):
             )
         )
 
-    SMTP_TLS: bool = True
-    SMTP_SSL: bool = False
-    SMTP_PORT: int = 587
-    SMTP_HOST: str | None = None
-    SMTP_USER: str | None = None
-    SMTP_PASSWORD: str | None = None
-    EMAILS_FROM_EMAIL: EmailStr | None = None
-    # Display name for the From header (should be plain text, not an email)
-    EMAILS_FROM_NAME: str | None = None
 
-    @model_validator(mode="after")
-    def _set_default_emails_from(self) -> Self:
-        if not self.EMAILS_FROM_NAME:
-            self.EMAILS_FROM_NAME = self.PROJECT_NAME
-        return self
-
-    EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 48
-
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def emails_enabled(self) -> bool:
-        return bool(self.SMTP_HOST and self.EMAILS_FROM_EMAIL)
-
-    @computed_field  # type: ignore[prop-decorator]
+    @computed_field
     @property
     def mercado_pago_enabled(self) -> bool:
         return bool(self.MERCADO_PAGO_ACCESS_TOKEN)
 
-    EMAIL_TEST_USER: EmailStr = "test@example.com"
     FIRST_SUPERUSER: EmailStr
     FIRST_SUPERUSER_PASSWORD: str
 
@@ -136,4 +113,4 @@ class Settings(BaseSettings):
         return self
 
 
-settings = Settings()  # type: ignore
+settings = Settings()

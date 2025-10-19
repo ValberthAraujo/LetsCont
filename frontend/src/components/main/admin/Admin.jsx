@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from './admin.module.css';
+import styles from './styles/admin.module.css';
 import { Form, FormGroup, FormLabel, FormInput, SubmitButton } from '../../ui/Form';
 import { HalloweenWebs } from '../../animations/HalloweenWebs';
 import { useAuth } from '../../../context/AuthContext';

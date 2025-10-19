@@ -50,6 +50,10 @@ export async function listInscricoes(token) {
   return apiFetch('/inscricoes', { method: 'GET', token }); // { data: InscricaoPublic[], count: number }
 }
 
+export async function listRifas(token) {
+  return apiFetch('/rifas', { method: 'GET', token }); // { data: InscricaoPublic[], count: number }
+}
+
 // Contato: enviar mensagem de contato pública
 export async function sendContato({ nome, email, mensagem }) {
   return apiFetch('/contatos', {

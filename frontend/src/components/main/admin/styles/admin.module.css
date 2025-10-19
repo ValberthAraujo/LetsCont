@@ -36,6 +36,7 @@
 
 .headerCenter { text-align: center; }
 .headerLogout { justify-self: end; }
+.headerSpacer { }
 
 .header h1 {
   color: var(--primary-color);
@@ -122,3 +123,30 @@
 }
 
 .tdCenter { text-align: center; }
+/* Subnav for admin panel tabs */
+.subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.tabLink {
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--border-radius);
+  background: var(--header-color);
+  color: var(--secondary-color);
+  text-decoration: none;
+  border: 1px solid var(--color-gray-light);
+}
+
+.tabActive {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--secondary-color);
+}
+
+.contentWrap {
+  margin-top: var(--spacing-md);
+}

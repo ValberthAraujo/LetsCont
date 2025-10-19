@@ -5,6 +5,11 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 .env
+.env.production
+
+# Python virtual envs
+.venv/
+backend/.venv/
 
 # Logs
 logs
