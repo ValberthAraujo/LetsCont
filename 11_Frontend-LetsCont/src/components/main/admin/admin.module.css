@@ -1,0 +1,124 @@
+.gridContainer {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+}
+
+.adminSection {
+  position: relative;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  color: var(--secondary-color);
+}
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 var(--spacing-md); }
+
+.panelCard {
+  background: var(--form-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.header {
+  margin-bottom: var(--spacing-lg);
+}
+
+.headerRow {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+}
+
+.headerCenter { text-align: center; }
+.headerLogout { justify-self: end; }
+
+.header h1 {
+  color: var(--primary-color);
+  margin-bottom: var(--spacing-sm);
+}
+
+.loginCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  background: var(--header-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: var(--spacing-lg);
+}
+
+/* Padroniza com inscrição/contato: largura do formulário */
+.registrationForm {
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
+  overflow: visible;
+}
+
+@media (max-width: 768px) {
+  .registrationForm {
+    margin: 0 var(--spacing-sm);
+  }
+}
+
+.formGroup { display: flex; flex-direction: column; gap: 0.5rem; }
+.formGroup label { color: var(--secondary-color); }
+.formGroup input {
+  background: var(--color-dark-gray);
+  border: 1px solid var(--color-gray-light);
+  border-radius: var(--border-radius);
+  padding: 0.7rem 0.9rem;
+  color: var(--secondary-color);
+}
+
+.card h2 {
+  margin-bottom: var(--spacing-xs);
+}
+
+.primaryButton {
+  margin-top: var(--spacing-sm);
+  padding: 0.8rem 1rem;
+  border: none;
+  border-radius: var(--border-radius);
+  background: var(--primary-color);
+  color: var(--secondary-color);
+  cursor: pointer;
+  width: 6rem;
+  height: 4rem;
+}
+
+.primaryButton:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.error { color: var(--detail-color); }
+.success { color: var(--color-success); }
+
+.note { display: none; }
+
+/* Table styles for inscrições */
+.tableWrap {
+  overflow-x: auto;
+  margin-top: var(--spacing-xs);
+  border-top: 1px solid var(--color-gray-light);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.th {
+  text-align: left;
+  padding: 8px;
+}
+
+.td {
+  padding: 8px;
+  border-top: 1px solid var(--color-gray-light);
+}
+
+.tdCenter { text-align: center; }

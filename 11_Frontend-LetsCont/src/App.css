@@ -1,0 +1,180 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+
+
+
+:root {
+    --primary-color: #FF6F00;
+    --primary-color-low: #ff984a9a;
+    --primary-hover: #FFA040;
+    --primary-hover-low: #edac6c9a;
+    --primary-color-shadow: 0 0 0.75rem rgba(255, 111, 0, 0.5);
+
+    --secondary-color: #F5F5F5;
+    --elements-color: #4B0082;
+
+    --detail-color: #C62828;
+    --detail-hover: #E53935;
+
+    --bg-color: #0F0018;
+    --bg-color-translucid: rgba(75, 0, 130, 0.3);
+    --header-color: #2B003F;
+    --form-color: #3B0060;  
+
+    --neutral-dark: #1A1A1A;
+
+
+    --background-color: var(--header-color);
+    --text-color: var(--secondary-color);
+    --color-dark: var(--elements-color);
+    --color-light: var(--form-color);
+    --color-gray: #9A8CA6;
+    --color-gray-light: #271E35;
+    --color-success: #00B090;
+    --color-danger: var(--detail-color);
+    --color-dark-gray: #1C1526;
+    --overlay-dark: rgba(0, 0, 0, 0.5);
+    --text-muted: rgba(245, 245, 245, 0.85);
+
+    /* Additional standardized tokens */
+    --overlay-darker: rgba(0, 0, 0, 0.5);
+    --overlay-very-dark: rgba(0, 0, 0, 0.5);
+    --secondary-alpha-50: rgba(245, 245, 245, 0.5);
+    --secondary-alpha-90: rgba(245, 245, 245, 0.9);
+    --primary-alpha-10: rgba(255, 111, 0, 0.1);
+    --primary-alpha-20: rgba(255, 111, 0, 0.2);
+    --primary-alpha-35: rgba(255, 111, 0, 0.35);
+    --primary-alpha-50: rgba(255, 111, 0, 0.5);
+
+    --shadow-sm: 0 4px 10px rgba(0,0,0,0.15);
+    --shadow-xs: 0 2px 6px rgba(0,0,0,0.06);
+    --glow-primary: 0 0 16px var(--primary-alpha-50);
+    --glow-primary-small: 0 0 12px var(--primary-alpha-50);
+    --glow-primary-strong: 0 0 18px var(--primary-alpha-50);
+
+
+    --font-primary: 'Roboto', sans-serif;
+
+    --font-secondary: 'Roboto', sans-serif;
+
+
+
+    --border-radius: 8px;
+
+    --border-radius-full: 999px;
+
+
+
+    --spacing-xs: 0.5rem;
+
+    --spacing-sm: 1rem;
+
+    --spacing-md: 1.5rem;
+
+    --spacing-lg: 2rem;
+
+    --spacing-xl: 3rem;
+
+    --font-size-title: 2rem;
+    --font-size-subtitle: 1.6rem;
+    --font-size-content: 1.3rem;
+    --font-size-mini: 1rem;
+
+    --shadow: 0 4px 20px rgba(0,0,0,0.25);
+
+    --shadow-hover: 0 8px 30px rgba(0,0,0,0.35);
+
+}
+
+
+
+* {
+
+    margin: 0;
+
+    padding: 0;
+
+    box-sizing: border-box;
+
+}
+
+
+
+body {
+
+    font-family: 'Roboto', sans-serif;
+
+    line-height: 1.6;
+
+    color: var(--secondary-color);
+
+    background-color: var(--bg-color);
+}
+
+.fundoBloco {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-sm);
+  background-color: var(--bg-color-translucid);
+  border: 1px solid var(--primary-color-low);
+  border-radius: var(--border-radius);
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  font-size: var(--font-size-title);
+}
+
+.fundoCard {
+  background: linear-gradient(145deg, var(--bg-color), var(--header-color));
+  padding: var(--spacing-md) 0;
+}
+
+.titulo {
+  color: var(--primary-color);
+  text-shadow: var(--primary-color-shadow);
+  font-size: var(--font-size-title);
+  text-align: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.subtitulo {
+  color: var(--primary-color);
+  text-shadow: var(--primary-color-shadow);
+  font-size: var(--font-size-subtitle);
+  text-align: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.descricao {
+    margin-top: var(--spacing-sm);
+    color: var(--secondary-color);
+    text-align: center;
+    font-size: var(--font-size-content);
+    opacity: 0.9;
+    margin-bottom: var(--spacing-xl);
+}
+
+.mini-desc {
+    margin-top: var(--spacing-xs);
+    color: var(--secondary-color);
+    text-align: center;
+    font-size: var(--font-size-mini);
+    opacity: 0.9;
+    margin-bottom: var(--spacing-xs);
+}
+
+.videoGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-sm);
+}
+
+.colunaEsquerda, .colunaDireita {
+  background: var(--bg-color-translucid);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+}
+
+.containerPrincipal {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}

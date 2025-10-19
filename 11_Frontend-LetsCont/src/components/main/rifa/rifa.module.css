@@ -1,0 +1,203 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.raffleSection {
+  padding: var(--spacing-xl) 0;
+  background: linear-gradient(135deg, var(--background-color) 0%, transparent 100%);
+  position: relative;
+}
+
+.raffleCard {
+  background: var(--form-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: var(--spacing-lg);
+}
+
+.cardDetails {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.rightCol { padding: var(--spacing-lg); }
+
+.raffleImage {
+  width: 100%;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.raffleImage:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* .raffleInfo merged into .rightCol */
+
+.raffleTitle {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+  color: var(--secondary-color);
+}
+
+.raffleSubtitle {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  margin-bottom: var(--spacing-md);
+  font-weight: 500;
+}
+
+.raffleDescription {
+  margin-bottom: var(--spacing-lg);
+  color: var(--secondary-color);
+  line-height: 1.6;
+}
+
+.raffleDescription p {
+  margin-bottom: var(--spacing-sm);
+}
+
+.raffleDescription em {
+  color: var(--color-gray);
+  font-style: italic;
+}
+
+.discountWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 1.2rem;
+  background: var(--color-dark-gray);
+  box-shadow: var(--shadow), var(--shadow-xs);
+  transform-origin: center;
+  transition: transform 0.15s ease;
+  margin-left: 0.2rem;
+  margin-bottom: 1.5rem;
+  max-width: 360px;
+  font-size: 0.6rem;
+  color: var(--detail-color);
+  font-weight: bold;
+  width: 2.4rem;
+  height: 1.4rem;
+}
+
+
+.priceSection {
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: var(--form-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+
+.priceDisplay {
+  display: flex;
+  align-items: center;
+}
+
+.originalPrice {
+  text-decoration: line-through;
+  color: var(--color-gray);
+  font-size: 1.125rem;
+  margin-right: var(--spacing-sm);
+}
+
+.currentPrice {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-success);
+}
+
+.priceNote {
+  font-size: 0.875rem;
+  color: var(--color-gray);
+  margin-top: var(--spacing-xs);
+}
+
+.quantitySection {
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: var(--form-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+
+.primaryButton {
+  background: var(--primary-color);
+  color: var(--secondary-color);
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: var(--border-radius-full);
+  font-size: 1.125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  align-items: center;
+  display: inline-block;
+  width: 100%;
+  animation: pulseGlow 3.4s ease-in-out infinite;
+}
+
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 968px) {
+  .cardDetails {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+
+  .raffleImage {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .raffleTitle {
+    font-size: 2rem;
+  }
+
+  .raffleSubtitle {
+    font-size: 1.125rem;
+  }
+
+  .priceSection {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .raffleTitle {
+    font-size: 1.75rem;
+  }
+
+  .actionButtons {
+    gap: var(--spacing-sm);
+  }
+
+  .primaryButton {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 var(--primary-alpha-50); }
+  50% { box-shadow: var(--glow-primary-strong); }
+}

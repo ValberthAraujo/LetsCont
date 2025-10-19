@@ -1,0 +1,29 @@
+.root {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.web {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  opacity: 0.5;
+  filter: drop-shadow(0 0 8px var(--primary-alpha-50));
+}
+
+.topLeft {
+  top: 0;
+  left: 0;
+}
+
+.topRight {
+  top: 0;
+  right: 0;
+}
+
+@media (max-width: 768px) {
+  .web { width: 120px; height: 120px; }
+}
+

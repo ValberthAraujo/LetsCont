@@ -1,0 +1,107 @@
+from typing import Any
+
+import httpx
+from fastapi import APIRouter, Depends, HTTPException, Request
+from sqlmodel import func, select
+
+from app.api.deps import SessionDep, require_roles
+from app.core.config import settings
+from app.models import RifaCheckout, RifaPedido, RifaPublic, UserRole
+
+
+router = APIRouter(prefix="/rifas", tags=["rifas"])
+
+
+@router.post("/checkout", status_code=201)
+def criar_pagamento_pix(session: SessionDep, body: RifaCheckout) -> dict[str, Any]:
+    if not settings.mercado_pago_enabled:
+        raise HTTPException(status_code=503, detail="Mercado Pago não configurado")
+
+    headers = {
+        "Authorization": f"Bearer {settings.MERCADO_PAGO_ACCESS_TOKEN}",
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "transaction_amount": round(float(body.valor), 2),
+        "description": "Rifa LetsCont",
+        "payment_method_id": "pix",
+        "payer": {
+            "email": body.email,
+            "first_name": body.nome,
+        },
+    }
+    # Create payment
+    with httpx.Client(base_url="https://api.mercadopago.com", timeout=15) as client:
+        resp = client.post("/v1/payments", headers=headers, json=payload)
+        if resp.status_code not in (200, 201):
+            raise HTTPException(status_code=502, detail=f"Mercado Pago error: {resp.text}")
+        data = resp.json()
+
+    transaction = data.get("point_of_interaction", {}).get("transaction_data", {})
+    qr_code = transaction.get("qr_code")
+    qr_code_base64 = transaction.get("qr_code_base64")
+    payment_id = str(data.get("id")) if data.get("id") is not None else None
+    status = data.get("status", "pending")
+
+    pedido = RifaPedido(
+        nome=body.nome,
+        email=body.email,
+        valor=float(body.valor),
+        status=str(status),
+        mp_payment_id=payment_id,
+        qr_code=qr_code,
+        qr_code_base64=qr_code_base64,
+    )
+    session.add(pedido)
+    session.commit()
+    session.refresh(pedido)
+
+    return {
+        "id": str(pedido.id),
+        "status": pedido.status,
+        "mp_payment_id": payment_id,
+        "qr_code": qr_code,
+        "qr_code_base64": qr_code_base64,
+    }
+
+
+@router.post("/webhook")
+async def mp_webhook(request: Request, session: SessionDep) -> dict[str, Any]:
+    """Endpoint para receber notificações do Mercado Pago.
+
+    Em produção, configure a URL pública no painel do Mercado Pago.
+    Para eventos de pagamento, consultamos o detalhe do pagamento e atualizamos o pedido.
+    """
+    try:
+        body = await request.json()
+    except Exception:
+        body = None
+    # Mercado Pago envia variados formatos. Buscamos id de pagamento.
+    payment_id = None
+    if isinstance(body, dict):
+        payment_id = body.get("data", {}).get("id") or body.get("id")
+
+    if payment_id and settings.mercado_pago_enabled:
+        headers = {"Authorization": f"Bearer {settings.MERCADO_PAGO_ACCESS_TOKEN}"}
+        with httpx.Client(base_url="https://api.mercadopago.com", timeout=15) as client:
+            r = client.get(f"/v1/payments/{payment_id}", headers=headers)
+            if r.status_code in (200, 201):
+                info = r.json()
+                status = str(info.get("status", "pending"))
+                pedido = session.exec(
+                    select(RifaPedido).where(RifaPedido.mp_payment_id == str(payment_id))
+                ).first()
+                if pedido:
+                    pedido.status = status
+                    session.add(pedido)
+                    session.commit()
+    return {"status": "ok"}
+
+
+@router.get(
+    "/",
+    dependencies=[Depends(require_roles(UserRole.FINANCEIRO))],
+)
+def listar_pedidos(session: SessionDep) -> list[RifaPublic]:
+    results = session.exec(select(RifaPedido).order_by(RifaPedido.created_at.desc())).all()
+    return [RifaPublic.model_validate(r) for r in results]
