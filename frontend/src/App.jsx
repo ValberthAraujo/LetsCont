@@ -6,6 +6,7 @@ import { Home } from './components/main/home/Home';
 import { Inscricao } from './components/main/inscricao/Inscricao';
 import { Rifa } from './components/main/rifa/Rifa';
 import './App.css';
+import AudioPreload from './components/media/AudioPreload.jsx';
 const Checkout = lazy(() => import('./components/main/rifa/checkout/Checkout'));
 const Admin = lazy(() => import('./components/main/admin/Admin'));
 const AdminPanel = lazy(() => import('./components/main/admin/AdminPanel'));
@@ -19,6 +20,7 @@ export function App() {
   return (
     <Router>
       <Header />
+      <AudioPreload />
       <Suspense fallback={<div style={{ padding: '1rem' }}>Carregando…</div>}>
         <Routes>
           <Route path="/" element={<Home />} />
