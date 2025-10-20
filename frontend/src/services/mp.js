@@ -1,13 +1,21 @@
 // Lightweight loader + opener for Mercado Pago Checkout (JS v2)
-// Uses a public key only (PK- or TEST-). Never use access tokens (APP_USR-).
+// Uses Mercado Pago public key (APP_USR- or TEST-). Never use access tokens here.
 
 const SDK_URL = 'https://sdk.mercadopago.com/js/v2';
 
 function isPublicKey(key) {
-  return typeof key === 'string' && (key.startsWith('PK-') || key.startsWith('TEST-'));
+  return (
+    typeof key === 'string' && key.length > 0 &&
+    (key.startsWith('APP_USR-') || key.startsWith('TEST-'))
+  );
 }
 
-export const MP_PUBLIC_KEY = (import.meta.env?.VITE_MP_PUBLIC_KEY || import.meta.env?.VITE_MERCADOPAGO_PUBLIC_KEY || import.meta.env?.VITE_PUBLIC_KEY || '').trim();
+export const MP_PUBLIC_KEY = (
+  import.meta.env?.VITE_MP_PUBLIC_KEY ||
+  import.meta.env?.VITE_MERCADOPAGO_PUBLIC_KEY ||
+  import.meta.env?.VITE_PUBLIC_KEY ||
+  ''
+).trim();
 
 let loading;
 export function loadMercadoPago() {

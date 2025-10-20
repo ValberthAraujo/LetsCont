@@ -246,3 +246,4 @@ export function Checkout() {
     </main>
   );
 }
+export default Checkout;

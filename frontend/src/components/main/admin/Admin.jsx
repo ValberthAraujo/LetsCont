@@ -89,3 +89,4 @@ export function Admin() {
     </main>
   );
 }
+export default Admin;

@@ -1,4 +1,27 @@
-const BASE = (import.meta.env?.VITE_API_URL || 'http://localhost:8000').replace(/\/$/, '');
+function deriveApiBase() {
+  const env = (import.meta.env?.VITE_API_URL || '').trim();
+  if (env) return env.replace(/\/$/, '');
+  if (typeof window !== 'undefined' && window.location) {
+    const { protocol, hostname } = window.location;
+    // Local dev defaults
+    if (
+      hostname === 'localhost' ||
+      hostname === '127.0.0.1' ||
+      hostname.endsWith('.localhost')
+    ) {
+      return 'http://localhost:8000';
+    }
+    // Derive api.<apex> based on current host, keep same scheme (avoid mixed content)
+    const parts = hostname.split('.');
+    if (parts.length >= 2) {
+      const apex = parts.slice(-2).join('.');
+      return `${protocol}//api.${apex}`.replace(/\/$/, '');
+    }
+  }
+  return 'http://localhost:8000';
+}
+
+const BASE = deriveApiBase();
 export const API_BASE = BASE;
 export const API_V1 = `${BASE}/api/v1`;
 export const PUBLIC_KEY = (import.meta.env?.VITE_PUBLIC_KEY || '').trim();

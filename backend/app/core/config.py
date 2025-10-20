@@ -52,6 +52,14 @@ class Settings(BaseSettings):
     SENTRY_DSN: HttpUrl | None = None
     # Mercado Pago
     MERCADO_PAGO_ACCESS_TOKEN: str | None = None
+    # Public webhook URL to receive Mercado Pago notifications (optional)
+    MERCADO_PAGO_WEBHOOK_URL: HttpUrl | None = None
+    # Email/SMTP (optional)
+    SMTP_HOST: str | None = None
+    SMTP_PORT: int = 587
+    SMTP_USER: str | None = None
+    SMTP_PASSWORD: str | None = None
+    EMAILS_FROM_EMAIL: EmailStr | None = None
     # Contacts form cooldown (seconds between submissions per email)
     CONTACTS_POST_TIMEOUT_SECONDS: int = 60
     POSTGRES_SERVER: str
@@ -87,6 +95,11 @@ class Settings(BaseSettings):
     @property
     def mercado_pago_enabled(self) -> bool:
         return bool(self.MERCADO_PAGO_ACCESS_TOKEN)
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def emails_enabled(self) -> bool:
+        return bool(self.SMTP_HOST and self.EMAILS_FROM_EMAIL)
 
     FIRST_SUPERUSER: EmailStr
     FIRST_SUPERUSER_PASSWORD: str
