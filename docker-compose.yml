@@ -99,6 +99,7 @@ services:
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.entrypoints=http
 
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.rule=Host(`api.${DOMAIN?Variable not set}`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.priority=10 # Prioridade para HTTPS
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.entrypoints=https
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.tls=true
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.tls.certresolver=${LETSENCRYPT_RESOLVER}
@@ -132,6 +133,7 @@ services:
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.entrypoints=http
 
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.rule=Host(`${DOMAIN?Variable not set}`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.priority=10 # Prioridade para HTTPS
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.entrypoints=https
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.tls=true
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.tls.certresolver=${LETSENCRYPT_RESOLVER}
