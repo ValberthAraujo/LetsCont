@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   traefik:
     image: traefik:v3.0
@@ -7,22 +5,13 @@ services:
     restart: always
 
     command:
-      # Painel administrativo
       - "--api.dashboard=true"
-
-      # Detectar containers Docker automaticamente
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
-
-      # Entradas HTTP e HTTPS
       - "--entrypoints.http.address=:80"
       - "--entrypoints.https.address=:443"
-
-      # Redirecionar HTTP -> HTTPS
       - "--entrypoints.http.http.redirections.entrypoint.to=https"
       - "--entrypoints.http.http.redirections.entrypoint.scheme=https"
-
-      # Desativa ACME interno (vamos usar certificado manual)
       - "--log.level=INFO"
 
     ports:
@@ -30,38 +19,22 @@ services:
       - "443:443"
 
     volumes:
-      # Permite ao Traefik monitorar os containers Docker
       - /var/run/docker.sock:/var/run/docker.sock:ro
-
-      # Certificados emitidos pelo Certbot
-      - /etc/letsencrypt/live/letscont.org/fullchain.pem:/certs/fullchain.pem:ro
-      - /etc/letsencrypt/live/letscont.org/privkey.pem:/certs/privkey.pem:ro
-
-      # Inclui o diretório "archive" para permitir leitura de links simbólicos
-      - /etc/letsencrypt/archive:/etc/letsencrypt/archive:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
 
     networks:
       - traefik-public
 
     labels:
-      # Habilita o painel do Traefik
       - "traefik.enable=true"
-
-      # Roteamento do painel administrativo
       - "traefik.http.routers.traefik.rule=Host(`traefik.letscont.org`)"
       - "traefik.http.routers.traefik.entrypoints=https"
       - "traefik.http.routers.traefik.service=api@internal"
-
-      # Certificado manual (Let’s Encrypt via Certbot)
       - "traefik.http.routers.traefik.tls=true"
-      - "traefik.http.routers.traefik.tls.certificates[0].certFile=/certs/fullchain.pem"
-      - "traefik.http.routers.traefik.tls.certificates[0].keyFile=/certs/privkey.pem"
-
-      # Protege o painel com autenticação básica
+      - "traefik.http.routers.traefik.tls.certificates[0].certFile=/etc/letsencrypt/live/letscont.org/fullchain.pem"
+      - "traefik.http.routers.traefik.tls.certificates[0].keyFile=/etc/letsencrypt/live/letscont.org/privkey.pem"
       - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$z3x1nE9b$$PjC/OaK4d2a/oHh/k4j9q."
       - "traefik.http.routers.traefik.middlewares=auth"
-
-      # Middleware para redirecionar HTTP → HTTPS
       - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
       - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"
 
