@@ -1,15 +1,16 @@
 version: "3.9"
 
 services:
-  proxy:
+  traefik:
     image: traefik:v3.0
-    container_name: traefik-proxy
+    container_name: traefik
     restart: always
+
     command:
-      # Painel de controle
+      # Painel administrativo
       - "--api.dashboard=true"
 
-      # Detectar containers automaticamente
+      # Detectar containers Docker automaticamente
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
 
@@ -17,11 +18,11 @@ services:
       - "--entrypoints.http.address=:80"
       - "--entrypoints.https.address=:443"
 
-      # Redirecionar HTTP → HTTPS
+      # Redirecionar HTTP -> HTTPS
       - "--entrypoints.http.http.redirections.entrypoint.to=https"
       - "--entrypoints.http.http.redirections.entrypoint.scheme=https"
 
-      # Desativa o ACME interno (não vai pedir certificado novo)
+      # Desativa ACME automático (usaremos certificado manual)
       - "--log.level=INFO"
 
     ports:
@@ -29,12 +30,12 @@ services:
       - "443:443"
 
     volumes:
-      # Permite Traefik monitorar containers
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      # Permite que o Traefik monitore outros containers
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
-      # Monta os certificados existentes do Certbot
-      - "/etc/letsencrypt/live/letscont.org/fullchain.pem:/certs/fullchain.pem:ro"
-      - "/etc/letsencrypt/live/letscont.org/privkey.pem:/certs/privkey.pem:ro"
+      # Monta os certificados existentes do Certbot (caminho real no host)
+      - /etc/letsencrypt/live/letscont.org/fullchain.pem:/certs/fullchain.pem:ro
+      - /etc/letsencrypt/live/letscont.org/privkey.pem:/certs/privkey.pem:ro
 
     networks:
       - traefik-public
@@ -46,18 +47,18 @@ services:
       # Dashboard protegido por senha
       - "traefik.http.routers.traefik.rule=Host(`traefik.letscont.org`)"
       - "traefik.http.routers.traefik.entrypoints=https"
-      - "traefik.http.routers.traefik.tls=true"
       - "traefik.http.routers.traefik.service=api@internal"
 
-      # Certificado manual do Certbot
+      # Certificados manuais do Certbot
+      - "traefik.http.routers.traefik.tls=true"
       - "traefik.http.routers.traefik.tls.certificates[0].certFile=/certs/fullchain.pem"
       - "traefik.http.routers.traefik.tls.certificates[0].keyFile=/certs/privkey.pem"
 
-      # Autenticação básica (admin:password)
+      # Autenticação básica (usuário: admin / senha: password)
       - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$z3x1nE9b$$PjC/OaK4d2a/oHh/k4j9q."
       - "traefik.http.routers.traefik.middlewares=auth"
 
-      # Middleware para redirecionamento
+      # Middleware para redirecionamento HTTPS
       - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
       - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"
 
