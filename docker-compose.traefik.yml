@@ -22,7 +22,7 @@ services:
       - "--entrypoints.http.http.redirections.entrypoint.to=https"
       - "--entrypoints.http.http.redirections.entrypoint.scheme=https"
 
-      # Desativa ACME automático (usaremos certificado manual)
+      # Desativa ACME interno (vamos usar certificado manual)
       - "--log.level=INFO"
 
     ports:
@@ -30,35 +30,38 @@ services:
       - "443:443"
 
     volumes:
-      # Permite que o Traefik monitore outros containers
+      # Permite ao Traefik monitorar os containers Docker
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
-      # Monta os certificados existentes do Certbot (caminho real no host)
+      # Certificados emitidos pelo Certbot
       - /etc/letsencrypt/live/letscont.org/fullchain.pem:/certs/fullchain.pem:ro
       - /etc/letsencrypt/live/letscont.org/privkey.pem:/certs/privkey.pem:ro
+
+      # Inclui o diretório "archive" para permitir leitura de links simbólicos
+      - /etc/letsencrypt/archive:/etc/letsencrypt/archive:ro
 
     networks:
       - traefik-public
 
     labels:
-      # Ativa o painel do Traefik
+      # Habilita o painel do Traefik
       - "traefik.enable=true"
 
-      # Dashboard protegido por senha
+      # Roteamento do painel administrativo
       - "traefik.http.routers.traefik.rule=Host(`traefik.letscont.org`)"
       - "traefik.http.routers.traefik.entrypoints=https"
       - "traefik.http.routers.traefik.service=api@internal"
 
-      # Certificados manuais do Certbot
+      # Certificado manual (Let’s Encrypt via Certbot)
       - "traefik.http.routers.traefik.tls=true"
       - "traefik.http.routers.traefik.tls.certificates[0].certFile=/certs/fullchain.pem"
       - "traefik.http.routers.traefik.tls.certificates[0].keyFile=/certs/privkey.pem"
 
-      # Autenticação básica (usuário: admin / senha: password)
+      # Protege o painel com autenticação básica
       - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$z3x1nE9b$$PjC/OaK4d2a/oHh/k4j9q."
       - "traefik.http.routers.traefik.middlewares=auth"
 
-      # Middleware para redirecionamento HTTPS
+      # Middleware para redirecionar HTTP → HTTPS
       - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
       - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"
 
