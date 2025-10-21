@@ -27,6 +27,8 @@ services:
       db:
         condition: service_healthy
         restart: true
+    networks:
+      - default
     command: bash scripts/prestart.sh
     env_file:
       - .env
@@ -105,7 +107,7 @@ services:
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.tls.certresolver=${LETSENCRYPT_RESOLVER}
 
       # Enable redirection for HTTP and HTTPS
-      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.middlewares=https-redirect
+      - "traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.middlewares=https-redirect@docker"
 
   frontend:
     image: '${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}'
@@ -139,7 +141,7 @@ services:
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.tls.certresolver=${LETSENCRYPT_RESOLVER}
 
       # Redirect HTTP->HTTPS
-      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.middlewares=https-redirect
+      - "traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.middlewares=https-redirect@docker"
 
 volumes:
   app-db-data:
