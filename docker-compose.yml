@@ -27,8 +27,6 @@ services:
       db:
         condition: service_healthy
         restart: true
-    networks:
-      - default
     command: bash scripts/prestart.sh
     env_file:
       - .env

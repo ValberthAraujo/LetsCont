@@ -1,0 +1,4 @@
+tls:
+  certificates:
+    - certFile: /etc/letsencrypt/live/letscont.org/fullchain.pem
+      keyFile: /etc/letsencrypt/live/letscont.org/privkey.pem
