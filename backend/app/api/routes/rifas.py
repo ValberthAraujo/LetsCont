@@ -1,5 +1,6 @@
 from typing import Any
 
+import logging
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlmodel import func, select
@@ -8,6 +9,7 @@ from app.api.deps import SessionDep, require_roles
 from app.core.config import settings
 from app.models import RifaCheckout, RifaPedido, RifaPublic, UserRole
 
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/rifas", tags=["rifas"])
 
@@ -76,25 +78,36 @@ async def mp_webhook(request: Request, session: SessionDep) -> dict[str, Any]:
     Em produção, configure a URL pública no painel do Mercado Pago.
     Para eventos de pagamento, consultamos o detalhe do pagamento e atualizamos o pedido.
     """
+    # TODO: Implementar validação de assinatura do webhook para segurança
+    # x_signature = request.headers.get("x-signature")
+    # x_request_id = request.headers.get("x-request-id")
+    # if not is_valid_signature(x_signature, x_request_id, body):
+    #     raise HTTPException(status_code=400, detail="Invalid signature")
+
     try:
         body = await request.json()
-    except Exception:
+    except Exception as e:
+        logger.warning(f"Webhook received non-json body: {e}")
         body = None
+
     # Mercado Pago envia variados formatos. Buscamos id de pagamento.
     payment_id = None
-    if isinstance(body, dict):
-        payment_id = body.get("data", {}).get("id") or body.get("id")
+    if isinstance(body, dict) and body.get("action") in ("payment.created", "payment.updated"):
+        payment_id = body.get("data", {}).get("id")
 
-    if payment_id and settings.mercado_pago_enabled:
+    if not payment_id:
+        logger.info(f"Webhook received without a valid payment ID or action. Body: {body}")
+        return {"status": "ok", "detail": "No relevant action or payment ID."}
+
+    if settings.mercado_pago_enabled:
         headers = {"Authorization": f"Bearer {settings.MERCADO_PAGO_ACCESS_TOKEN}"}
         with httpx.Client(base_url="https://api.mercadopago.com", timeout=15) as client:
             r = client.get(f"/v1/payments/{payment_id}", headers=headers)
             if r.status_code in (200, 201):
                 info = r.json()
                 status = str(info.get("status", "pending"))
-                pedido = session.exec(
-                    select(RifaPedido).where(RifaPedido.mp_payment_id == str(payment_id))
-                ).first()
+                statement = select(RifaPedido).where(RifaPedido.mp_payment_id == str(payment_id))
+                pedido = session.exec(statement).first()
                 if pedido:
                     pedido.status = status
                     session.add(pedido)

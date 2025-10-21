@@ -1,12 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './checkout.module.css';
 import { useNavigate } from 'react-router-dom';
 import { checkoutRifa, getRifaStatus } from '../../../../services/api';
 import { openMercadoPagoCheckout } from '../../../../services/mp';
 
+// Constants
+const MAX_QUANTITY = 100;
+const PRICE_PER_TICKET = 4.99;
+const POLLING_EXPIRATION_MS = 5 * 60 * 1000; // 5 minutes
+const POLLING_INTERVAL_MS = 4000;
+const POLLING_ERROR_INTERVAL_MS = 5000;
+
 export function Checkout() {
-  const maxQuantity = 100;
-  const pricePerTicket = 4.99;
 
   const [quantity, setQuantity] = useState(1);
   const [nome, setNome] = useState('');
@@ -21,68 +26,68 @@ export function Checkout() {
 
   useEffect(() => () => { if (pollRef.current) { clearTimeout(pollRef.current); pollRef.current = null; } }, []);
 
-  const stopPolling = () => {
+  const stopPolling = useCallback(() => {
     if (pollRef.current) {
       clearTimeout(pollRef.current);
       pollRef.current = null;
     }
-  };
+  }, []);
 
-  const schedulePoll = (id, untilTs = Date.now() + 5 * 60_000) => {
+  const schedulePoll = useCallback((id, untilTs = Date.now() + POLLING_EXPIRATION_MS) => {
     if (!id) return;
     const doPoll = async () => {
       try {
         const res = await getRifaStatus(id);
-        const status = (res?.status || res?.payment_status || res?.state || '').toLowerCase();
-        if (['paid', 'approved', 'completed', 'settled', 'succeeded', 'success'].includes(status)) {
+        const paymentStatus = (res?.status || res?.payment_status || res?.state || '').toLowerCase();
+        if (['paid', 'approved', 'completed', 'settled', 'succeeded', 'success'].includes(paymentStatus)) {
           setPaymentState({ code: 'paid', label: 'Pagamento confirmado ✔' });
           setStatus({ type: 'success', text: 'Pagamento aprovado! Obrigado por participar.' });
           stopPolling();
           return;
         }
-        if (['expired', 'canceled', 'cancelled', 'failed', 'rejected', 'error'].includes(status)) {
+        if (['expired', 'canceled', 'cancelled', 'failed', 'rejected', 'error'].includes(paymentStatus)) {
           setPaymentState({ code: 'failed', label: 'Pagamento não aprovado' });
           setStatus({ type: 'error', text: res?.detail || 'Pagamento não aprovado. Tente novamente.' });
           stopPolling();
           return;
         }
-        // pending or unknown
         setPaymentState({ code: 'pending', label: 'Aguardando pagamento...' });
         if (Date.now() < untilTs) {
-          pollRef.current = setTimeout(doPoll, 4000);
+          pollRef.current = setTimeout(doPoll, POLLING_INTERVAL_MS);
         } else {
           stopPolling();
         }
       } catch (_) {
-        // tenta novamente até expirar
         if (Date.now() < untilTs) {
-          pollRef.current = setTimeout(doPoll, 5000);
+          pollRef.current = setTimeout(doPoll, POLLING_ERROR_INTERVAL_MS);
         } else {
           stopPolling();
         }
       }
     };
-    // start now
     doPoll();
-  };
+  }, [stopPolling]);
+
   const navigate = useNavigate();
 
-  const decreaseQuantity = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
-  const increaseQuantity = () => setQuantity(prev => (prev < maxQuantity ? prev + 1 : maxQuantity));
+  const decreaseQuantity = useCallback(() => setQuantity(prev => (prev > 1 ? prev - 1 : 1)), []);
+  const increaseQuantity = useCallback(() => setQuantity(prev => (prev < MAX_QUANTITY ? prev + 1 : MAX_QUANTITY)), []);
 
-  const handleQuantityChange = (e) => {
+  const handleQuantityChange = useCallback((e) => {
     let value = parseInt(e.target.value);
     if (isNaN(value) || value < 1) value = 1;
-    if (value > maxQuantity) value = maxQuantity;
+    if (value > MAX_QUANTITY) value = MAX_QUANTITY;
     setQuantity(value);
-  };
+  }, []);
 
-  const handlePayment = async () => {
+  const totalPrice = (quantity * PRICE_PER_TICKET).toFixed(2);
+
+  const handlePayment = useCallback(async () => {
     if (loading) return;
     setStatus({ type: '', text: '', paymentUrl: '' });
     setLoading(true);
     try {
-      const payload = { nome, email, valor: Number(totalPrice), quantidade: Number(quantity) };
+      const payload = { nome, tel, email, valor: Number(totalPrice), quantidade: Number(quantity) };
       const res = await checkoutRifa(payload);
 
       const provider = res?.provider || res?.gateway || '';
@@ -101,10 +106,11 @@ export function Checkout() {
       const orderId = res?.order_id || res?.id || res?.payment_id || res?.preference_id || res?.transaction_id || res?.reference || '';
       setPaymentInfo({ provider, paymentUrl, qrSrc, pixCode, expiresAt, orderId });
 
+      // Logic to handle different payment responses
       if (paymentUrl && !qrSrc && !pixCode) {
         setStatus({ type: 'success', text: 'Redirecionando para o pagamento...', paymentUrl });
         window.open(paymentUrl, '_blank');
-      } else if (!paymentUrl && !qrSrc && !pixCode && res?.preference_id) {
+      } else if (res?.preference_id && !paymentUrl && !qrSrc && !pixCode) {
         const opened = await openMercadoPagoCheckout(res.preference_id);
         if (opened) {
           setStatus({ type: 'success', text: 'Abrindo checkout do Mercado Pago...' });
@@ -124,13 +130,11 @@ export function Checkout() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [loading, nome, tel, email, totalPrice, quantity, schedulePoll]);
 
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     navigate('/rifa');
-  };
-
-  const totalPrice = (quantity * pricePerTicket).toFixed(2);
+  }, [navigate]);
 
   return (
     <main className={styles.checkoutPage}>
@@ -163,7 +167,7 @@ export function Checkout() {
                     className={styles.quantityInput}
                     value={quantity}
                     min="1"
-                    max={maxQuantity}
+                    max={MAX_QUANTITY}
                     onChange={handleQuantityChange}
                   />
                   <button type="button" className={styles.quantityBtn} onClick={increaseQuantity}>+</button>
@@ -214,7 +218,7 @@ export function Checkout() {
                           try {
                             await navigator.clipboard.writeText(paymentInfo.pixCode);
                             setCopied(true);
-                            setTimeout(() => setCopied(false), 1500);
+                            setTimeout(() => setCopied(false), 2000);
                           } catch (_) {}
                         }}
                       >

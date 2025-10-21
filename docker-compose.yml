@@ -23,9 +23,6 @@ services:
     image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
     build:
       context: ./backend
-    networks:
-      - traefik-public
-      - default
     depends_on:
       db:
         condition: service_healthy
@@ -54,9 +51,6 @@ services:
   backend:
     image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
     restart: always
-    networks:
-      - traefik-public
-      - default
     depends_on:
       db:
         condition: service_healthy
@@ -88,6 +82,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - traefik-public
+      - default
 
     build:
       context: ./backend
@@ -112,9 +109,6 @@ services:
   frontend:
     image: '${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}'
     restart: always
-    networks:
-      - traefik-public
-      - default
     build:
       context: ./frontend
       args:
@@ -124,6 +118,9 @@ services:
         VITE_PUBLIC_KEY: ${VITE_PUBLIC_KEY?Variable not set}
     env_file:
       - .env
+    networks:
+      - traefik-public
+      - default
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-public
