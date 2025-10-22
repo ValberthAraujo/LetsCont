@@ -45,6 +45,7 @@ services:
 
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=traefik-public"
 
       # Painel Traefik
       - "traefik.http.routers.traefik.rule=Host(`traefik.letscont.org`)"
@@ -52,7 +53,7 @@ services:
       - "traefik.http.routers.traefik.service=api@internal"
       - "traefik.http.routers.traefik.tls.certresolver=le"
       - "traefik.http.routers.traefik.middlewares=auth"
-      - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$z3x1nE9b$$PjC/OaK4d2a/oHh/k4j9q."
+      - "traefik.http.middlewares.auth.basicauth.users=admin:$apr1$z3x1nE9b$PjC/OaK4d2a/oHh/k4j9q."
 
   # ==========================
   # BACKEND (FastAPI)
