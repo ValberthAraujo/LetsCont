@@ -1,0 +1,113 @@
+.carousel {
+  position: relative;
+  width: 70%;
+  height: 400px;
+  overflow: hidden;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-sm);
+  margin: 0 auto;
+}
+
+/* Responsividade: reduzir altura e dar respiro no mobile */
+@media (max-width: 768px) {
+  .carousel {
+    height: 300px;
+    margin-top: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel {
+    height: 220px;
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+  }
+}
+
+.imageWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 1rem;
+}
+
+/* Botões */
+.btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--overlay-dark);
+  color: var(--secondary-color);
+  border: none;
+  font-size: 2rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.15s ease, box-shadow 0.15s ease;
+  z-index: 10;
+}
+
+.btn:hover {
+  background: var(--overlay-darker);
+  transform: translateY(-50%) scale(1.05);
+  box-shadow: var(--glow-primary-small);
+}
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}
+
+/* Bolinhas de navegação */
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  position: absolute;
+  bottom: 5px;
+  width: 100%;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--secondary-alpha-50);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 0;
+  padding: 0;
+  display: inline-block;
+}
+
+.dot.active {
+  background: var(--secondary-color);
+  width: 14px;
+  height: 14px;
+}
+
+.dot:focus-visible {
+  outline: 2px solid var(--secondary-color);
+  outline-offset: 2px;
+}
+
+/* Inner image for <picture> rendering */
+.innerImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
