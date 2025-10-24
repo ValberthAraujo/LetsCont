@@ -1,4 +1,29 @@
+<<<<<<< HEAD
 tls:
   certificates:
     - certFile: /etc/letsencrypt/live/letscont.org/fullchain.pem
       keyFile: /etc/letsencrypt/live/letscont.org/privkey.pem
+=======
+<<<<<<< HEAD
+tls:
+  certificates:
+    - certFile: /etc/letsencrypt/live/letscont.org/fullchain.pem
+      keyFile: /etc/letsencrypt/live/letscont.org/privkey.pem
+=======
+http:
+  middlewares:
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+  routers:
+    http-catchall:
+      rule: "HostRegexp(`{host:.+}`)"
+      entryPoints:
+        - http
+      middlewares:
+        - redirect-to-https
+      service: noop@internal
+>>>>>>> 2b7fb78 (versão mais recente)
+>>>>>>> 8809be1 (.)

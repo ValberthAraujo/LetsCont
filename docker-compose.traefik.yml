@@ -1,5 +1,13 @@
+<<<<<<< HEAD
 services:
   traefik:
+=======
+version: "3.9"
+
+services:
+  traefik:
+<<<<<<< HEAD
+>>>>>>> 8809be1 (.)
     image: traefik:v3.0
     container_name: traefik
     restart: always
@@ -49,4 +57,46 @@ services:
 
 networks:
   traefik-public:
+<<<<<<< HEAD
+=======
+=======
+    image: traefik:3.0
+    container_name: letscont-traefik
+    command:
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.file.filename=/traefik_dynamic.yml"
+      - "--entrypoints.http.address=:80"
+      - "--entrypoints.https.address=:443"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=http"
+      - "--certificatesresolvers.myresolver.acme.email=valbertharaujo@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      # Produção (sem staging)
+      - "--certificatesresolvers.myresolver.acme.caServer=https://acme-v02.api.letsencrypt.org/directory"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik_dynamic.yml:/traefik_dynamic.yml:ro"
+      - "traefik-letsencrypt:/letsencrypt"
+    networks:
+      - letscont-net
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.letscont.org`)"
+      - "traefik.http.routers.traefik.entrypoints=https"
+      - "traefik.http.routers.traefik.tls.certresolver=myresolver"
+      - "traefik.http.routers.traefik.service=api@internal"
+
+volumes:
+  traefik-letsencrypt:
+
+networks:
+  letscont-net:
+>>>>>>> 2b7fb78 (versão mais recente)
+>>>>>>> 8809be1 (.)
     external: true
