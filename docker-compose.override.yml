@@ -62,9 +62,7 @@ services:
       - --reload
       - "app/main.py"
     depends_on:
-      db:
-        condition: service_healthy
-      prestart: null
+      - db
     # Dev CORS/host overrides so frontend at http://localhost:5173 pode chamar a API
     environment:
       - ENVIRONMENT=local
