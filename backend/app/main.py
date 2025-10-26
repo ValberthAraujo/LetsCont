@@ -3,7 +3,12 @@ from fastapi import FastAPI
 from fastapi.routing import APIRoute
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.gzip import GZipMiddleware
-from starlette.middleware.proxy_headers import ProxyHeadersMiddleware
+
+# ProxyHeadersMiddleware became optional across Starlette versions; import defensively
+try:  # pragma: no cover - environment-dependent
+    from starlette.middleware.proxy_headers import ProxyHeadersMiddleware as _ProxyHeadersMiddleware
+except Exception:  # pragma: no cover
+    _ProxyHeadersMiddleware = None
 
 from app.api.main import api_router
 from app.core.config import settings
@@ -44,4 +49,5 @@ app.add_middleware(GZipMiddleware, minimum_size=1024)
 
 # Honor X-Forwarded-Proto / X-Forwarded-For from Traefik/NGINX
 # Ensures redirects use https scheme when behind a reverse proxy
-app.add_middleware(ProxyHeadersMiddleware)
+if _ProxyHeadersMiddleware is not None:
+    app.add_middleware(_ProxyHeadersMiddleware)
