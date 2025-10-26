@@ -79,24 +79,25 @@ export function PanelLetsCoffe() {
   // Load raffle orders to compute revenue
   useEffect(() => {
     let active = true;
+    const ac = new AbortController();
     async function run() {
       if (!token) return;
       setLoadingRifas(true);
       setRifasError('');
       try {
-        const data = await listRifas(token);
+        const data = await listRifas(token, { signal: ac.signal });
         if (!active) return;
         const arr = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
         setRifas(arr);
       } catch (err) {
-        if (!active) return;
+        if (!active || err?.name === 'AbortError') return;
         setRifasError(err?.message || 'Falha ao carregar receitas das rifas');
       } finally {
         if (active) setLoadingRifas(false);
       }
     }
     run();
-    return () => { active = false; };
+    return () => { active = false; ac.abort(); };
   }, [token]);
 
   const precoNumber = useMemo(() => {
@@ -107,24 +108,25 @@ export function PanelLetsCoffe() {
   // Carregar produtos do backend
   useEffect(() => {
     let active = true;
+    const ac = new AbortController();
     async function run() {
       if (!token) return;
       setLoadingProdutos(true);
       setProdutosError('');
       try {
-        const data = await listProdutos(token);
+        const data = await listProdutos(token, { signal: ac.signal });
         if (!active) return;
         const arr = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
         setProdutos(arr);
       } catch (err) {
-        if (!active) return;
+        if (!active || err?.name === 'AbortError') return;
         setProdutosError(err?.message || 'Falha ao carregar produtos');
       } finally {
         if (active) setLoadingProdutos(false);
       }
     }
     run();
-    return () => { active = false; };
+    return () => { active = false; ac.abort(); };
   }, [token]);
 
   const loadFile = (file) => {

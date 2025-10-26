@@ -20,25 +20,26 @@ export function PanelFinanceiro() {
 
   useEffect(() => {
     let active = true;
+    const ac = new AbortController();
     async function run() {
       if (!token || !isAdmin) return;
       setLoading(true);
       setError('');
       try {
-        const data = await listRifas(token);
+        const data = await listRifas(token, { signal: ac.signal });
         if (!active) return;
         const arr = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
         setPedidos(arr);
         setCount(arr.length);
       } catch (err) {
-        if (!active) return;
+        if (!active || err?.name === 'AbortError') return;
         setError(err?.message || 'Falha ao carregar pedidos');
       } finally {
         if (active) setLoading(false);
       }
     }
     run();
-    return () => { active = false; };
+    return () => { active = false; ac.abort(); };
   }, [token, isAdmin]);
 
   return (

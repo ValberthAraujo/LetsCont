@@ -14,12 +14,13 @@ export function PanelInscricoes() {
 
   useEffect(() => {
     let active = true;
+    const ac = new AbortController();
     async function run() {
       if (!token || !isAdmin) return;
       setLoading(true);
       setError('');
       try {
-        const data = await listInscricoes(token);
+        const data = await listInscricoes(token, { signal: ac.signal });
         if (!active) return;
         setCount(Number(data?.count || 0));
         setInscricoes(Array.isArray(data?.data) ? data.data : []);
@@ -31,7 +32,7 @@ export function PanelInscricoes() {
       }
     }
     run();
-    return () => { active = false; };
+    return () => { active = false; ac.abort(); };
   }, [token, isAdmin]);
 
   return (

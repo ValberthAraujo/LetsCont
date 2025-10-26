@@ -27,7 +27,7 @@ export const API_V1 = `${BASE}/api/v1`;
 export const PUBLIC_KEY = (import.meta.env?.VITE_PUBLIC_KEY || '').trim();
 
 // HTTP wrapper with consistent error handling and Authorization support
-export async function apiFetch(path, { method = 'GET', token, headers = {}, body, timeoutMs = 15000 } = {}) {
+export async function apiFetch(path, { method = 'GET', token, headers = {}, body, timeoutMs = 15000, signal } = {}) {
   const url = path.startsWith('http') ? path : `${API_V1}${path.startsWith('/') ? path : `/${path}`}`;
   const init = { method, headers: { Accept: 'application/json', ...headers } };
 
@@ -42,9 +42,12 @@ export async function apiFetch(path, { method = 'GET', token, headers = {}, body
     }
   }
 
-  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-  if (controller) init.signal = controller.signal;
-  const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+  // Allow caller-provided AbortSignal for external cancellation (e.g., on unmount)
+  // If provided, we skip our internal timeout controller to avoid conflicting signals
+  const controller = signal || (typeof AbortController !== 'undefined' ? new AbortController() : null);
+  if (controller) init.signal = controller.signal || controller; // support passing a raw signal
+  const useInternalTimer = !signal && controller && 'abort' in controller;
+  const timer = useInternalTimer ? setTimeout(() => controller.abort(), timeoutMs) : null;
 
   let res;
   try {
@@ -83,12 +86,12 @@ export async function testToken(token) {
 }
 
 // Admin: listar inscrições (requer superusuário)
-export async function listInscricoes(token) {
-  return apiFetch('/inscricoes/', { method: 'GET', token }); // { data: InscricaoPublic[], count: number }
+export async function listInscricoes(token, { signal, timeoutMs } = {}) {
+  return apiFetch('/inscricoes/', { method: 'GET', token, signal, timeoutMs }); // { data: InscricaoPublic[], count: number }
 }
 
-export async function listRifas(token) {
-  return apiFetch('/rifas/', { method: 'GET', token }); // { data: InscricaoPublic[], count: number }
+export async function listRifas(token, { signal, timeoutMs } = {}) {
+  return apiFetch('/rifas/', { method: 'GET', token, signal, timeoutMs }); // { data: InscricaoPublic[], count: number }
 }
 
 // Contato: enviar mensagem de contato pública
@@ -100,8 +103,8 @@ export async function sendContato({ nome, email, mensagem }) {
 }
 
 // Admin/Infra: listar contatos recebidos
-export async function listContatos(token) {
-  return apiFetch('/contatos/', { method: 'GET', token }); // { data: ContatoPublic[], count: number }
+export async function listContatos(token, { signal, timeoutMs } = {}) {
+  return apiFetch('/contatos/', { method: 'GET', token, signal, timeoutMs }); // { data: ContatoPublic[], count: number }
 }
 
 // Rifa: criar checkout/pedido de pagamento
@@ -131,8 +134,8 @@ export async function responderContato(token, id, resposta = 'Respondido pelo pa
 }
 
 // Let's Coffe: produtos
-export async function listProdutos(token) {
-  return apiFetch('/letscoffe/produtos', { method: 'GET', token }); // { data: ProdutoPublic[], count }
+export async function listProdutos(token, { signal, timeoutMs } = {}) {
+  return apiFetch('/letscoffe/produtos', { method: 'GET', token, signal, timeoutMs }); // { data: ProdutoPublic[], count }
 }
 
 export async function createProduto(token, { nome, quantidade, preco, descricao, foto }) {
