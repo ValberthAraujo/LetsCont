@@ -27,9 +27,9 @@ export const API_V1 = `${BASE}/api/v1`;
 export const PUBLIC_KEY = (import.meta.env?.VITE_PUBLIC_KEY || '').trim();
 
 // HTTP wrapper with consistent error handling and Authorization support
-export async function apiFetch(path, { method = 'GET', token, headers = {}, body } = {}) {
+export async function apiFetch(path, { method = 'GET', token, headers = {}, body, timeoutMs = 15000 } = {}) {
   const url = path.startsWith('http') ? path : `${API_V1}${path.startsWith('/') ? path : `/${path}`}`;
-  const init = { method, headers: { ...headers } };
+  const init = { method, headers: { Accept: 'application/json', ...headers } };
 
   if (token) init.headers.Authorization = `Bearer ${token}`;
 
@@ -42,7 +42,21 @@ export async function apiFetch(path, { method = 'GET', token, headers = {}, body
     }
   }
 
-  const res = await fetch(url, init);
+  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  if (controller) init.signal = controller.signal;
+  const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+
+  let res;
+  try {
+    res = await fetch(url, init);
+  } catch (e) {
+    const err = new Error(e?.name === 'AbortError' ? 'Request timed out' : (e?.message || 'Network error'));
+    err.cause = e;
+    throw err;
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+
   const isJson = (res.headers.get('content-type') || '').includes('application/json');
   const data = isJson ? await res.json().catch(() => null) : null;
   if (!res.ok) {
@@ -70,16 +84,16 @@ export async function testToken(token) {
 
 // Admin: listar inscrições (requer superusuário)
 export async function listInscricoes(token) {
-  return apiFetch('/inscricoes', { method: 'GET', token }); // { data: InscricaoPublic[], count: number }
+  return apiFetch('/inscricoes/', { method: 'GET', token }); // { data: InscricaoPublic[], count: number }
 }
 
 export async function listRifas(token) {
-  return apiFetch('/rifas', { method: 'GET', token }); // { data: InscricaoPublic[], count: number }
+  return apiFetch('/rifas/', { method: 'GET', token }); // { data: InscricaoPublic[], count: number }
 }
 
 // Contato: enviar mensagem de contato pública
 export async function sendContato({ nome, email, mensagem }) {
-  return apiFetch('/contatos', {
+  return apiFetch('/contatos/', {
     method: 'POST',
     body: { nome, email, mensagem },
   }); // expected: { id, detail? }
@@ -87,7 +101,7 @@ export async function sendContato({ nome, email, mensagem }) {
 
 // Admin/Infra: listar contatos recebidos
 export async function listContatos(token) {
-  return apiFetch('/contatos', { method: 'GET', token }); // { data: ContatoPublic[], count: number }
+  return apiFetch('/contatos/', { method: 'GET', token }); // { data: ContatoPublic[], count: number }
 }
 
 // Rifa: criar checkout/pedido de pagamento
