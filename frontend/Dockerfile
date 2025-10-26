@@ -16,7 +16,6 @@ ENV VITE_PUBLIC_KEY=${VITE_PUBLIC_KEY}
 
 RUN npm run build
 
-# Production image to serve static files
 FROM nginx:1.27-alpine AS runner
 
 # Replace default config with SPA-friendly one
@@ -28,7 +27,8 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 
 EXPOSE 80
 
-HEALTHCHECK --interval=30s --timeout=3s --retries=3 CMD wget -qO- http://localhost/ || exit 1
+# Healthcheck: validate Nginx configuration (no external tools required)
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 CMD nginx -t || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]
 
