@@ -12,12 +12,14 @@ services:
       - --entrypoints.https.address=:443
       - --entrypoints.http.http.redirections.entrypoint.to=https
       - --entrypoints.http.http.redirections.entrypoint.scheme=https
-      - --log.level=INFO
+      - --log.level=DEBUG
       # ACME (Let's Encrypt) HTTP-01 challenge
       - --certificatesresolvers.${LETSENCRYPT_RESOLVER}.acme.httpchallenge=true
       - --certificatesresolvers.${LETSENCRYPT_RESOLVER}.acme.httpchallenge.entrypoint=http
       - --certificatesresolvers.${LETSENCRYPT_RESOLVER}.acme.email=${LETSENCRYPT_EMAIL}
       - --certificatesresolvers.${LETSENCRYPT_RESOLVER}.acme.storage=/letsencrypt/acme.json
+      # Also allow TLS-ALPN-01 on 443 to simplify issuance
+      - --certificatesresolvers.${LETSENCRYPT_RESOLVER}.acme.tlschallenge=true
 
     ports:
       - "80:80"
