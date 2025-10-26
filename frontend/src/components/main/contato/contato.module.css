@@ -57,7 +57,10 @@
 }
 
 @media (max-width: 768px) {
-.registrationForm {
+  .hero { min-height: auto; padding: 1.25rem; }
+  .contactHeader h1 { font-size: 2rem; }
+  .contactHeader p { font-size: 1rem; }
+  .registrationForm {
     margin: 0 var(--spacing-sm);
     padding: var(--spacing-md);
   }

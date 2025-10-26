@@ -217,6 +217,8 @@
   .checkoutContent {
     padding: var(--spacing-md);
   }
+  .title { font-size: 1.75rem; }
+  .total { text-align: center; }
 
   .quantityControls {
     flex-direction: column;

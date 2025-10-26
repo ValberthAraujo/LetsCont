@@ -150,6 +150,23 @@ body {
     margin-bottom: var(--spacing-xl);
 }
 
+/* Global responsive type scale */
+@media (max-width: 768px) {
+  :root {
+    --font-size-title: 1.75rem;
+    --font-size-subtitle: 1.35rem;
+    --font-size-content: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --font-size-title: 1.5rem;
+    --font-size-subtitle: 1.2rem;
+    --font-size-content: 1rem;
+  }
+}
+
 .mini-desc {
     margin-top: var(--spacing-xs);
     color: var(--secondary-color);

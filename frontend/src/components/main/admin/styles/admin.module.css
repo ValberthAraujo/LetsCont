@@ -1,4 +1,4 @@
-.gridContainer {
+﻿.gridContainer {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
   gap: var(--spacing-lg);
@@ -53,7 +53,7 @@
   padding: var(--spacing-lg);
 }
 
-/* Padroniza com inscrição/contato: largura do formulário */
+/* Padroniza com inscriÃ§Ã£o/contato: largura do formulÃ¡rio */
 .registrationForm {
   max-width: 500px;
   margin: 0 auto;
@@ -189,12 +189,9 @@
 
 .note { display: none; }
 
-/* Table styles for inscrições */
-.tableWrap {
-  overflow-x: auto;
-  margin-top: var(--spacing-xs);
-  border-top: 1px solid var(--color-gray-light);
-}
+/* Table styles for inscriÃ§Ãµes */
+
+; -webkit-overflow-scrolling: touch;
 
 .table {
   width: 100%;
@@ -367,3 +364,10 @@
 .statValue { font-size: 1.3rem; font-weight: 700; }
 .statPositive { color: var(--color-success); }
 .statNegative { color: var(--detail-color); }
+
+
+@media (max-width: 768px) {
+  .headerRow { grid-template-columns: 1fr; text-align: center; }
+  .headerLogout { justify-self: center; }
+  .th, .td { padding: 6px; }
+}

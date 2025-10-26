@@ -117,7 +117,7 @@ export function Inscricao() {
               onClick={() => setShowWitch(true)}
               disabled={loading}
             >
-              {loading ? 'Enviando...' : 'Confirmar InscriÃ§Ã£o!'}
+              {loading ? 'Enviando...' : 'Confirmar Inscrição!'}
             </button>
 
             {mensagem && (
