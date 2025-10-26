@@ -104,6 +104,7 @@ services:
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.priority=10 # Prioridade para HTTPS
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.entrypoints=https
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.tls=true
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.tls.certresolver=${LETSENCRYPT_RESOLVER}
 
       # Enable redirection for HTTP and HTTPS
       - "traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.middlewares=https-redirect@docker"
@@ -132,14 +133,23 @@ services:
 
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.rule=Host(`${DOMAIN?Variable not set}`)
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.entrypoints=http
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http-w.rule=Host(`www.${DOMAIN?Variable not set}`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http-w.entrypoints=http
 
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.rule=Host(`${DOMAIN?Variable not set}`)
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.priority=10 # Prioridade para HTTPS
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.entrypoints=https
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.tls=true
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.tls.certresolver=${LETSENCRYPT_RESOLVER}
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https-w.rule=Host(`www.${DOMAIN?Variable not set}`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https-w.priority=10
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https-w.entrypoints=https
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https-w.tls=true
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https-w.tls.certresolver=${LETSENCRYPT_RESOLVER}
 
       # Redirect HTTP->HTTPS
       - "traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.middlewares=https-redirect@docker"
+      - "traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http-w.middlewares=https-redirect@docker"
 
 volumes:
   app-db-data:
