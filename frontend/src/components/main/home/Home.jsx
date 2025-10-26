@@ -10,7 +10,7 @@ import { CarouselMotion } from '../../animations/Carrossel';
 export function Home() {
   const sources = React.useMemo(() => ([
     { fallback: feeac, alt: 'Fachada da FEEAC (UFC)' },
-    { fallback: feeac2, alt: 'Audit��rio da FEEAC (UFC)' },
+    { fallback: feeac2, alt: 'Auditório da FEEAC (UFC)' },
   ]), []);
 
   return (
@@ -48,7 +48,7 @@ export function Home() {
             </div>
             <div className={styles.colunaDireita}>
               <h2 className={styles.tituloCartao}>Local</h2>
-              <p className={styles.textoCartao}>O Let's Cont desse ano acontecerǭ no:</p>
+              <p className={styles.textoCartao}>O Let's Cont desse ano acontecerá no:</p>
               <p className={styles.textoCartao}><strong>Auditório Pedro Viera</strong></p>
               <address className={styles.textoCartao}>
                 R. Mal. Deodoro, 400 - Benfica, Fortaleza - CE, 60020-060

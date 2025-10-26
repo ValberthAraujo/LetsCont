@@ -42,10 +42,10 @@ export function Inscricao() {
       <section className={styles.hero}>
         <HalloweenWebs />
         <div className={styles.container}>
-          <h1 className='titulo'>InscriÃ§Ã£o</h1>
+          <h1 className='titulo'>Inscrição</h1>
           <p className='descricao'>
-            Preencha o formulÃ¡rio abaixo para se inscrever no Let's Cont!<br/>
-            A participaÃ§Ã£o no evento Ã© gratuita!
+            Preencha o formulário abaixo para se inscrever no Let's Cont!<br/>
+            A participação no evento é gratuita!
           </p>
 
           <form className={`${styles.registrationForm} ${form.form}`} onSubmit={handleSubmit}>
@@ -76,7 +76,7 @@ export function Inscricao() {
             </div>
 
             <div className={styles.formGroup}>
-              <label className={styles.formLabel}>Participante</label>
+              <label className={styles.formLabel}>Participar</label>
               <div className={styles.radioGroup}>
                 <label className={styles.radioOption}>
                   <input 
@@ -134,8 +134,8 @@ export function Inscricao() {
         {showSuccess && (
           <div className={styles.modalOverlay} role="dialog" aria-modal="true" aria-label="InscriÃ§Ã£o confirmada" onClick={() => setShowSuccess(false)}>
             <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-              <h2 className={styles.modalTitle}>InscriÃ§Ã£o confirmada</h2>
-              <p>Sua inscriÃ§Ã£o foi registrada com sucesso.</p>
+              <h2 className={styles.modalTitle}>Inscrição confirmada</h2>
+              <p>Sua inscrição foi registrada com sucesso.</p>
               <button type="button" className={styles.submitButton} onClick={() => setShowSuccess(false)}>
                 Fechar
               </button>

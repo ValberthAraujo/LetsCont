@@ -19,9 +19,15 @@ def criar_pagamento_pix(session: SessionDep, body: RifaCheckout) -> dict[str, An
     if not settings.mercado_pago_enabled:
         raise HTTPException(status_code=503, detail="Mercado Pago não configurado")
 
+    # Mercado Pago requer um header de idempotência para evitar pagamentos duplicados
+    # e em alguns ambientes a ausência causa erro 400.
+    import uuid as _uuid
+    idem_key = f"letscont-{_uuid.uuid4()}"
+
     headers = {
         "Authorization": f"Bearer {settings.MERCADO_PAGO_ACCESS_TOKEN}",
         "Content-Type": "application/json",
+        "X-Idempotency-Key": idem_key,
     }
     payload: dict[str, Any] = {
         "transaction_amount": round(float(body.valor), 2),
