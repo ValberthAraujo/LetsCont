@@ -26,8 +26,6 @@ export function App() {
           <Route path="/" element={<Home />} />
           <Route path="/contato" element={<Contato />} />
           <Route path="/inscricao" element={<Inscricao />} />
-          <Route path="/rifa" element={<Rifa />} />
-          <Route path="/rifa/checkout" element={<Checkout />}/>
           <Route
             path="/admin/painel/*"
             element={
