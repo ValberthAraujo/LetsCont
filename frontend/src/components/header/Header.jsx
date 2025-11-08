@@ -15,7 +15,6 @@ export function Header() {
     { link: '/', rotulo: 'Home' },
     { link: '/inscricao', rotulo: 'Inscrição' },
     { link: '/contato', rotulo: 'Contato' },
-    { link: '/rifa', rotulo: 'Rifa' },
     // Mostra a guia Admin somente se NÃO estiver autenticado
     ...(!auth.isAuthenticated ? [{ link: '/admin', rotulo: 'Admin' }] : []),
     ...(auth.isSuperuser ? [{ link: '/admin/painel', rotulo: 'Painel' }] : []),

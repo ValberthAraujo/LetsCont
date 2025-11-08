@@ -36,7 +36,7 @@ export function Home() {
             <div className={styles.colunaEsquerda}>
               <h2 className={styles.tituloCartao}>Descrição do Evento</h2>
               <p className={styles.textoCartao}>
-                Este evento é organizado pelos estudantes de Ciências Contǭbeis da UFC e
+                Este evento é organizado pelos estudantes de Ciências Contábeis da UFC e
                 conta com a participação de egressos da universidade, oferecendo uma
                 excelente oportunidade para <strong>networking e integração</strong>.
               </p>
@@ -49,13 +49,13 @@ export function Home() {
             <div className={styles.colunaDireita}>
               <h2 className={styles.tituloCartao}>Local</h2>
               <p className={styles.textoCartao}>O Let's Cont desse ano acontecerá no:</p>
-              <p className={styles.textoCartao}><strong>Auditório Pedro Viera</strong></p>
+              <p className={styles.textoCartao}><strong>Auditório Antônio Albuquerque</strong></p>
               <address className={styles.textoCartao}>
                 R. Mal. Deodoro, 400 - Benfica, Fortaleza - CE, 60020-060
               </address>
               <a
                 className={styles.linkMapa}
-                href="https://www.google.com/maps/search/?api=1&query=FEAAC+NOVA+-+Bloco+Didático+III+Fortaleza"
+                href="https://maps.app.goo.gl/pPveAQ1tvuZKWEui6"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Abrir localização no Google Maps"
